@@ -19,7 +19,7 @@ jobs:
         ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+      run: terraform apply -auto-approve
       working-directory: ./terraform-state
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
