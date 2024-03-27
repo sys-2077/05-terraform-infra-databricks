@@ -2,7 +2,7 @@ name: 'Terraform - State'
 
 on:
   pull_request:
-    branches: [main]
+    branches: [develop]
 
 jobs:
   terraform:
