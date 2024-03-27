@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    # Validate Terraform configuration
+    # Validate Terraform configuration and modules
     - name: Terraform Init
       run: terraform init
       working-directory: ./terraform-state
