@@ -26,8 +26,10 @@ jobs:
       run: |
         if $(az storage account check-name --name ${{ env.STORAGE_ACCOUNT_NAME }} --query nameAvailable); then
           echo "::set-output name=exists::false"
+          echo "No se encontró storage account con nombre ${{ env.STORAGE_ACCOUNT_NAME }}, creando recurso."
         else
           echo "::set-output name=exists::true"
+          echo "Se encontró storage account con nombre ${{ env.STORAGE_ACCOUNT_NAME }}, no se creará recurso."
         fi
 
     - name: Terraform Init
@@ -42,5 +44,7 @@ jobs:
 
     - name: Terraform Apply
       if: steps.check_storage_account.outputs.exists == 'false'
-      run: terraform apply -auto-approve -var-file="terraform.tfvars"
+      run: |
+        terraform apply -auto-approve -var-file="terraform.tfvars"
+        echo "Se creo recurso Storage Account con nombre ${{ env.STORAGE_ACCOUNT_NAME }}."
       working-directory: ./terraform-state
