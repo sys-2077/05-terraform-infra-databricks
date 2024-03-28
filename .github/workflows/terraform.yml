@@ -5,15 +5,17 @@ on:
     branches: [dev]
 
 jobs:
-  Build:
+  terraform-state:
     runs-on: ubuntu-latest
     steps:
+    - run: echo "Running Terraform State Jobs"
     - uses: actions/checkout@v4
 
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
     - name: Set Environment Variables
       run: |
         echo "STORAGE_ACCOUNT_NAME=$(terraform output storage_account_name)" >> $GITHUB_ENV
