@@ -5,36 +5,23 @@ on:
     branches: [dev]
 
 jobs:
-  terraform-state:
+  Build:
     runs-on: ubuntu-latest
     steps:
-    - run: echo "Running Terraform State Jobs"
     - uses: actions/checkout@v4
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.1.7
 
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-    - name: Set Environment Variables
-      run: |
-        echo "STORAGE_ACCOUNT_NAME=$(terraform output storage_account_name)" >> $GITHUB_ENV
-      working-directory: ./terraform-state
 
     - name: Check if Storage Account Exists
       id: check_storage_account
       run: |
-        if $(az storage account check-name --name ${{ env.STORAGE_ACCOUNT_NAME }} --query nameAvailable); then
+        if $(az storage account check-name --name terrdb7473 --query nameAvailable); then
           echo "::set-output name=exists::false"
-          echo "No se encontró storage account con nombre ${{ env.STORAGE_ACCOUNT_NAME }}, creando recurso."
         else
           echo "::set-output name=exists::true"
-          echo "Se encontró storage account con nombre ${{ env.STORAGE_ACCOUNT_NAME }}, no se creará recurso."
         fi
 
     - name: Terraform Init
@@ -49,7 +36,5 @@ jobs:
 
     - name: Terraform Apply
       if: steps.check_storage_account.outputs.exists == 'false'
-      run: |
-        terraform apply -auto-approve -var-file="terraform.tfvars"
-        echo "Se creo recurso Storage Account con nombre ${{ env.STORAGE_ACCOUNT_NAME }}."
+      run: terraform apply -auto-approve -var-file="terraform.tfvars"
       working-directory: ./terraform-state
