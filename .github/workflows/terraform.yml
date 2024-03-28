@@ -5,7 +5,7 @@ on:
     branches: [dev]
 
 jobs:
-  terraform:
+  Build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -14,11 +14,15 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Set Environment Variables
+      run: |
+        echo "STORAGE_ACCOUNT_NAME=$(terraform output storage_account_name)" >> $GITHUB_ENV
+      working-directory: ./terraform-state
 
     - name: Check if Storage Account Exists
       id: check_storage_account
       run: |
-        if $(az storage account check-name --name terrdb7473 --query nameAvailable); then
+        if $(az storage account check-name --name ${{ env.STORAGE_ACCOUNT_NAME }} --query nameAvailable); then
           echo "::set-output name=exists::false"
         else
           echo "::set-output name=exists::true"
