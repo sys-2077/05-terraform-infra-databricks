@@ -20,7 +20,7 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          az account show
+          az login
 
     - name: Check if Storage Account Exists
       id: check_storage_account
