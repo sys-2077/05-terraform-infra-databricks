@@ -1,13 +1,8 @@
 name: 'Terraform - State'
+
 on:
   pull_request:
     branches: [dev]
-
-env:
-  ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-  ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
 
 jobs:
   Build:
@@ -15,33 +10,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Azure CLI
-      uses: azure/CLI@v1
+    - name: Azure Login
+      uses: azure/login@v1
       with:
-        azcliversion: 2.30.0
-        inlineScript: |
-          az login
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Check if Storage Account Exists
       id: check_storage_account
       run: |
         if $(az storage account check-name --name terrdb7473 --query nameAvailable); then
           echo "::set-output name=exists::false"
+          echo "Storage Account does not exist"
         else
           echo "::set-output name=exists::true"
+          echo "Storage Account exists"
         fi
-
-    - name: Terraform Init
-      if: steps.check_storage_account.outputs.exists == 'false'
-      run: terraform init
-      working-directory: ./terraform-state
-
-    - name: Terraform Plan
-      if: steps.check_storage_account.outputs.exists == 'false'
-      run: terraform plan -var-file="terraform.tfvars"
-      working-directory: ./terraform-state
-
-    - name: Terraform Apply
-      if: steps.check_storage_account.outputs.exists == 'false'
-      run: terraform apply -auto-approve -var-file="terraform.tfvars"
-      working-directory: ./terraform-state
