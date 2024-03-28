@@ -23,7 +23,7 @@ jobs:
     - name: Check if Storage Account Exists
       id: check_storage_account
       run: |
-        if $(az storage account check-name --name ${{ env.STORAGE_ACCOUNT_NAME }} --query nameAvailable); then
+        if $(az storage account check-name --name "$STORAGE_ACCOUNT_NAME" --query nameAvailable); then
           echo "::set-output name=exists::false"
           echo "Storage Account does not exist"
         else
@@ -31,4 +31,3 @@ jobs:
           echo "Storage Account exists"
         fi
 
-     
