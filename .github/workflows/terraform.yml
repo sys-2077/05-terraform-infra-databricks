@@ -19,6 +19,10 @@ jobs:
       run: terraform init
       working-directory: ./terraform-state
 
+    - name: Terraform Refresh
+      run: terraform refresh
+      working-directory: ./terraform-state
+
     - name: Set Environment Variables
       run: |
         echo "STORAGE_ACCOUNT_NAME=$(terraform output storage_account_name)" >> $GITHUB_ENV
@@ -35,3 +39,12 @@ jobs:
           echo "Storage Account exists"
         fi
 
+    - name: Terraform Plan
+      if: steps.check_storage_account.outputs.exists == 'false'
+      run: terraform plan
+      working-directory: ./terraform-state
+
+    - name: Terraform Apply
+      if: steps.check_storage_account.outputs.exists == 'false'
+      run: terraform apply -auto-approve
+      working-directory: ./terraform-state
