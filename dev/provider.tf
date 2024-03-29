@@ -9,14 +9,9 @@ terraform {
       version = "~> 1.0"
     }
   }
+  backend "azurerm" {}
 }
 
 provider "azurerm" {
   features {}
 }
-
-provider "databricks" {
-  alias = "dev"
-  host  = azurerm_databricks_workspace.dev.workspace_url
-}
-

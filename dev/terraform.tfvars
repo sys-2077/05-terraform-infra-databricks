@@ -1,0 +1,10 @@
+resource_group_name     = "rg-terraform-state"
+storage_account_name    = "terrdb7473"
+container_name          = "terrpr7473"
+location                = "eastus"
+workspace_name          = "rg-terraform-databricks"
+cluster_name            = "dev-cluster"
+spark_version           = "11.3.x-scala2.12"
+node_type_id            = "Standard_DS3_v2"
+autotermination_minutes = 30
+num_workers             = 1
