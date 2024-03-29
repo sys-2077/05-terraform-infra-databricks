@@ -33,7 +33,7 @@ jobs:
     - name: Check if Storage Account Exists
       id: check_storage_account
       run: |
-        check_result=$(az storage account check-name --name "$STORAGE_ACCOUNT_NAME" --query nameAvailable)
+        check_result=$(az storage account check-name --name $STORAGE_ACCOUNT_NAME --query nameAvailable)
         echo "Status: $check_result"
         if [[ "$check_result" == "true" ]]; then
           echo "::set-output name=exists::true"
