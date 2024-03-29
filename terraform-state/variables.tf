@@ -1,19 +1,19 @@
 variable "resource_group_name" {
   type        = string
-  description = "El nombre del grupo de recursos donde se crearán los recursos."
+  description = "Resources group where will be created."
 }
 
 variable "location" {
   type        = string
-  description = "La ubicación donde se crearán los recursos."
+  description = "Region where will be created"
 }
 
 variable "storage_account_name" {
   type        = string
-  description = "El nombre de la cuenta de almacenamiento."
+  description = "Storage Account Name."
 }
 
 variable "container_name" {
   type        = string
-  description = "El nombre del contenedor de almacenamiento."
+  description = "Storage Container Name"
 }
