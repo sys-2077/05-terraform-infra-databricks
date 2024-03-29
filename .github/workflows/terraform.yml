@@ -15,6 +15,10 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./terraform-state
+
     - name: Set Environment Variables
       run: |
         echo "STORAGE_ACCOUNT_NAME=$(terraform output storage_account_name)" >> $GITHUB_ENV
