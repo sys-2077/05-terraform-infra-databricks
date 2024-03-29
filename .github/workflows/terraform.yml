@@ -33,13 +33,15 @@ jobs:
     - name: Check if Storage Account Exists
       id: check_storage_account
       run: |
-        if $(az storage account check-name --name "$STORAGE_ACCOUNT_NAME" --query nameAvailable); then
+        check_result=$(az storage account check-name --name "$STORAGE_ACCOUNT_NAME" --query nameAvailable)
+        if [[ "$check_result" == "true" ]]; then
           echo "::set-output name=exists::true"
           echo "Storage Account does not exist"
         else
           echo "::set-output name=exists::false"
           echo "Storage Account exists"
         fi
+      
 
     - name: Terraform Plan
       if: steps.check_storage_account.outputs.exists == 'true'
