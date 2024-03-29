@@ -5,25 +5,46 @@ on:
     branches: [dev]
 
 jobs:
-  terraform:
+  terraform-state:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    # Validate Terraform configuration ??
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - name: Terraform Init
       run: terraform init
       working-directory: ./terraform-state
-      env:
-        ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+
+    - name: Terraform Refresh
+      run: terraform refresh
+      working-directory: ./terraform-state
+
+    - name: Set Environment Variables
+      run: |
+        STORAGE_ACCOUNT_NAME=$(terraform output storage_account_name | sed 's/"//g')
+        echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
+      working-directory: ./terraform-state
+
+    - name: Check if Storage Account Exists
+      id: check_storage_account
+      run: |
+        check_result=$(az storage account check-name --name $STORAGE_ACCOUNT_NAME --query nameAvailable)
+        if [[ "$check_result" == "true" ]]; then
+          echo "::set-output name=exists::true"
+        else
+          echo "::set-output name=exists::false"
+        fi
+      
+    - name: Terraform Plan
+      if: steps.check_storage_account.outputs.exists == 'true'
+      run: terraform plan
+      working-directory: ./terraform-state
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve -var-file="../terraform.tfvars"
+      if: steps.check_storage_account.outputs.exists == 'true'
+      run: terraform apply -auto-approve
       working-directory: ./terraform-state
-      env:
-        ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
