@@ -40,11 +40,11 @@ jobs:
         fi
 
     - name: Terraform Plan
-      if: steps.check_storage_account.outputs.exists == 'false'
+      if: steps.check_storage_account.outputs.exists == 'true'
       run: terraform plan
       working-directory: ./terraform-state
 
     - name: Terraform Apply
-      if: steps.check_storage_account.outputs.exists == 'false'
+      if: steps.check_storage_account.outputs.exists == 'true'
       run: terraform apply -auto-approve
       working-directory: ./terraform-state
