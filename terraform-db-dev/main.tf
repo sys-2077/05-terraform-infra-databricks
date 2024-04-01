@@ -15,10 +15,16 @@ resource "azurerm_databricks_workspace" "this" {
   }
 }
 
-resource "azurerm_databricks_cluster" "this" {
-  cluster_name            = "democluster"
+data "databricks_spark_version" "latest" {
+  depends_on = [ azurerm_databricks_workspace.this ]
+  latest = true
+  long_term_support = true
+}
+
+resource "databricks_cluster" "this" {
+  cluster_name            = "my-cluster"
+  spark_version           = data.databricks_spark_version.latest.id
   node_type_id            = "Standard_DS3_v2"
-  spark_version           = "7.3.x-scala2.12"
   autotermination_minutes = 30
   autoscale {
     min_workers = 1
@@ -30,5 +36,4 @@ resource "azurerm_databricks_cluster" "this" {
   custom_tags = {
     environment = var.environment
   }
-  depends_on = [azurerm_databricks_workspace.this]
 }
