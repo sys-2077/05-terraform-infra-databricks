@@ -5,7 +5,7 @@ on:
     branches: [dev]
 
 jobs:
-  terraform-state:
+  terraform-databricks-dev:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -17,34 +17,13 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-      working-directory: ./terraform-state
-
-    - name: Terraform Refresh
-      run: terraform refresh
-      working-directory: ./terraform-state
-
-    - name: Set Environment Variables
-      run: |
-        STORAGE_ACCOUNT_NAME=$(terraform output storage_account_name | sed 's/"//g')
-        echo "STORAGE_ACCOUNT_NAME=$STORAGE_ACCOUNT_NAME" >> $GITHUB_ENV
-      working-directory: ./terraform-state
-
-    - name: Check if Storage Account Exists
-      id: check_storage_account
-      run: |
-        check_result=$(az storage account check-name --name $STORAGE_ACCOUNT_NAME --query nameAvailable)
-        if [[ "$check_result" == "true" ]]; then
-          echo "::set-output name=exists::true"
-        else
-          echo "::set-output name=exists::false"
-        fi
+      working-directory: ./terraform-db-dev
       
     - name: Terraform Plan
-      if: steps.check_storage_account.outputs.exists == 'true'
       run: terraform plan
-      working-directory: ./terraform-state
+      working-directory: ./terraform-db-dev
 
     - name: Terraform Apply
-      if: steps.check_storage_account.outputs.exists == 'true'
       run: terraform apply -auto-approve
-      working-directory: ./terraform-state
+      working-directory: ./terraform-db-dev
+
