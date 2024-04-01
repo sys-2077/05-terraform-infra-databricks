@@ -21,6 +21,22 @@ data "databricks_spark_version" "latest" {
   long_term_support = true
 }
 
+resource "databricks_cluster" "this" {
+  cluster_name            = "my-cluster-${var.environment}"
+  spark_version           = data.databricks_spark_version.latest.id
+  node_type_id            = var.node_type
+  autotermination_minutes = 30
+  autoscale {
+    min_workers = 1
+    max_workers = var.max_workers
+  }
+  spark_conf = {
+    "spark.databricks.delta.preview.enabled" = "true"
+  }
+  custom_tags = {
+    environment = var.environment
+  }
+}
 
 resource "databricks_directory" "this" {
   path = "/dbfs/scripts"
