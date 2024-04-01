@@ -15,10 +15,13 @@ resource "azurerm_databricks_workspace" "this" {
   }
 }
 
+data "databricks_spark_version" "latest" {
+  depends_on = [ azurerm_databricks_workspace.this ]
+  latest = true
+  long_term_support = true
+}
 
 
-resource "databricks_dbfs_directory" "this" {
-  depends_on = [azurerm_databricks_workspace.this]
-
+resource "databricks_directory" "this" {
   path = "/dbfs/scripts"
 }
