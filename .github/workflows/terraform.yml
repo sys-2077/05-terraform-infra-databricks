@@ -27,3 +27,26 @@ jobs:
       run: terraform apply -auto-approve
       working-directory: ./terraform-db-dev
 
+
+
+    terraform-databricks-prod:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform-db-prod
+        
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform-db-prod
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./terraform-db-prod      
