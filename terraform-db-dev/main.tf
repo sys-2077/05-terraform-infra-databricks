@@ -1,14 +1,14 @@
 resource "azurerm_resource_group" "this" {
-  name     = var.resource_group_name
+  name     = "rg-db-${var.environment}"
   location = var.location
 }
 
 resource "azurerm_databricks_workspace" "this" {
-  name                        = "db-workspace"
+  name                        = "db-workspace-${var.environment}"
   resource_group_name         = azurerm_resource_group.this.name
   location                    = azurerm_resource_group.this.location
   sku                         = "standard"
-  managed_resource_group_name = "db-workspace-rg2"
+  managed_resource_group_name = "db-sws-${var.environment}"
 
   tags = {
     environment = var.environment
@@ -22,7 +22,7 @@ data "databricks_spark_version" "latest" {
 }
 
 resource "databricks_cluster" "this" {
-  cluster_name            = "my-cluster"
+  cluster_name            = "my-cluster-${var.environment}"
   spark_version           = data.databricks_spark_version.latest.id
   node_type_id            = "Standard_DS3_v2"
   autotermination_minutes = 30
