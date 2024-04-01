@@ -1,6 +1,6 @@
 # Databricks Development Workflow - Phase 1
 
-
+<img src="https://github.com/sys-2077/05-terraform-infra-databricks/assets/127072666/c972b5c3-19d2-4104-b8e5-038ded7ba00f" width="90%"></img>
 
 The Databricks Development Workflow - Phase 1 project focuses on establishing a robust architecture and a streamlined CI/CD (Continuous Integration/Continuous Deployment) workflow for Databricks development using a dedicated development workspace. The main objective is to create a foundation for efficient and collaborative development practices.
 
