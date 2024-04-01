@@ -9,3 +9,15 @@ resource "azurerm_storage_account" "dev" {
   account_tier             = "Standard"
   account_replication_type = "GRS"
 }
+
+resource "azurerm_databricks_workspace" "this" {
+  name                        = "db-workspace"
+  resource_group_name         = azurerm_resource_group.dev.name
+  location                    = azurerm_resource_group.dev.location
+  sku                         = "standard"
+  managed_resource_group_name = "db-workspace-rg2"
+
+  tags = {
+    environment = var.env
+  }
+}
