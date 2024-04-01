@@ -17,12 +17,12 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-      working-directory: ./terraform-state
+      working-directory: ./terraform-db-dev
       
     - name: Terraform Plan
       run: terraform plan
-      working-directory: ./terraform-state
+      working-directory: ./terraform-db-dev
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
-      working-directory: ./terraform-state
+      working-directory: ./terraform-db-dev
