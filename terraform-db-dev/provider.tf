@@ -6,15 +6,11 @@ terraform {
     }
     databricks = {
       source  = "databricks/databricks"
-      version = "1.27.0"
+      version = "1.39.0"
     }
     azuread = {
       source = "hashicorp/azuread"
       version = "2.43.0"
-    }
-    time = {
-      source = "hashicorp/time"
-      version = "0.9.1"
     }
   }
 }
