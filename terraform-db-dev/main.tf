@@ -18,6 +18,6 @@ resource "azurerm_databricks_workspace" "this" {
   managed_resource_group_name = "db-workspace-rg2"
 
   tags = {
-    environment = var.env
+    environment = var.environment
   }
 }
