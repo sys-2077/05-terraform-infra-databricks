@@ -1,4 +1,3 @@
-location                = "eastus"
-storage_account_name  = "terrdb7473"
-resource_group_name   = "rg-terraform-state"
+location              = "eastus"
+resource_group_name   = "rg-terraform-db"
 environment           = "dev"
